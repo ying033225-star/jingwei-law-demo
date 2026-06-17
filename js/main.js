@@ -64,17 +64,34 @@
      3. LANGUAGE SWAP
      ============================================= */
   function swapLanguage(lang) {
-    document.documentElement.setAttribute('data-lang', lang);
-    const btn = document.getElementById('langToggle');
-    if (btn) btn.textContent = lang === 'en' ? '中' : 'EN';
-
-    // Swap text on static elements with data-cn/data-en
-    document.querySelectorAll('[data-cn]').forEach(el => {
-      if (el.hasAttribute('data-en')) {
-        el.textContent = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-cn');
+    try {
+      // Step 1: Swap text content FIRST (before changing data-lang)
+      var elList = document.querySelectorAll('[data-cn]');
+      for (var i = 0; i < elList.length; i++) {
+        try {
+          var el = elList[i];
+          if (el.nodeType === 1 && el.hasAttribute('data-en')) {
+            el.textContent = lang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-cn');
+          }
+        } catch(innerErr) {}
       }
-    });
-    currentLang = lang;
+      
+      // Step 2: Update CSS language attribute (for Chinese typography)
+      document.documentElement.setAttribute('data-lang', lang);
+      
+      // Step 3: Update button text
+      var btn = document.getElementById('langToggle');
+      if (btn) btn.textContent = lang === 'en' ? '中' : 'EN';
+      
+      // Step 4: Save current language
+      currentLang = lang;
+      
+      // Step 5: Force re-render dynamic sections
+      renderPractices();
+      renderTeam();
+    } catch(e) {
+      currentLang = lang;
+    }
   }
 
   /* =============================================
@@ -354,27 +371,6 @@
   // Setup forms on all pages
   setupForm('contactForm', 'formName', 'formPhone', 'formMessage');
   setupForm('contactFormPage', 'formNamePage', 'formPhonePage', 'formMessagePage');
-      e.preventDefault();
-      const name = document.getElementById('formName').value.trim();
-      const phone = document.getElementById('formPhone').value.trim();
-      const msg = document.getElementById('formMessage').value.trim();
-
-      if (!name) { alert('请填写您的姓名 / Please enter your name'); document.getElementById('formName').focus(); return; }
-      if (!phone) { alert('请填写联系电话 / Please enter your phone number'); document.getElementById('formPhone').focus(); return; }
-      if (!msg) { alert('请简要描述您的情况 / Please describe your case'); document.getElementById('formMessage').focus(); return; }
-
-      const btn = form.querySelector('.form__submit');
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 发送中 / Sending...';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> 已发送 / Sent!';
-        form.reset();
-        setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2500);
-      }, 1200);
-    });
-  }
 
   /* =============================================
      13. INIT
