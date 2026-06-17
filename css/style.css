@@ -57,6 +57,7 @@ body {
   background: var(--white);
   line-height: 1.7;
   overflow-x: hidden;
+  padding-top: var(--nav-height);
 }
 
 img {
@@ -241,8 +242,9 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding-top: var(--nav-height);
 }
+
+
 
 .hero__bg {
   position: absolute;
@@ -966,8 +968,9 @@ a {
   align-items: center;
   overflow: hidden;
   background: var(--blue-800);
-  padding-top: var(--nav-height);
 }
+
+
 
 .page-hero__bg {
   position: absolute;
